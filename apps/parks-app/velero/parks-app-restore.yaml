@@ -1,0 +1,45 @@
+---
+apiVersion: velero.io/v1
+kind: Restore
+metadata:
+  name: parks-app-restore-1
+  namespace: openshift-adp
+  labels:
+    app: parks-app
+    restore-type: application
+spec:
+  # Reference the backup to restore from
+  backupName: parks-app-backup-2
+  
+  # Restore to the same namespace
+  includedNamespaces:
+  - parks-app
+  
+  # Include all resources
+  includedResources:
+  - "*"
+  
+  # Exclude resources that shouldn't be restored
+  excludedResources:
+  - jobs.batch
+  - events
+  - events.events.k8s.io
+  - buildconfigs.build.openshift.io
+  - builds.build.openshift.io
+
+ # - imagestreams.image.openshift.io
+ # - imagestreamtags.image.openshift.io
+  
+  # Restore persistent volumes
+  restorePVs: true
+  
+  # Preserve node ports and other cluster-specific configs
+  preserveNodePorts: false
+  
+
+  # Namespace mappings (restore to same namespace)
+  namespaceMapping: {}
+  
+  # Restore policy
+  existingResourcePolicy: update
+  
