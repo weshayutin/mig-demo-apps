@@ -43,3 +43,5 @@ spec:
   # Restore policy
   existingResourcePolicy: update
   
+# need to add a hook to: oc -n parks-app label pod restify-1-qtjsx deploymentconfig=restify
+
