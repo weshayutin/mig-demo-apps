@@ -20,8 +20,9 @@ spec:
   source:
     type: Git
     git:
-      uri: https://github.com/weshayutin/restify-mongodb-parks
-      ref: master
+      uri: https://github.com/weshayutin/mig-demo-apps
+      ref: parks_app_fix
+    contextDir: apps/parks-app/src
   strategy:
     type: Source
     sourceStrategy:

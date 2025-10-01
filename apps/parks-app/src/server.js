@@ -9,9 +9,9 @@ db.initDB('keepAlive').catch(err => {
   console.error('Failed to initialize database:', err);
 });
 
-app.use(restify.queryParser())
-app.use(restify.CORS())
-app.use(restify.fullResponse())
+app.use(restify.plugins.queryParser())
+app.use(restify.plugins.cors())
+app.use(restify.plugins.fullResponse())
 
 // Routes
 app.get('/parks/within', db.selectBox);
@@ -29,7 +29,7 @@ app.get('/', function (req, res, next)
   res.end(data.toString().replace(/host:port/g, req.header('Host')));
 });
 
-app.get(/\/(css|js|img)\/?.*/, restify.serveStatic({directory: __dirname+'/static/'}));
+app.get(/\/(css|js|img)\/?.*/, restify.plugins.serveStatic({directory: __dirname+'/static/'}));
 
 app.listen(config.get('PORT'), config.get('IP'), function () {
   console.log( "Listening on " + config.get('IP') + ", port " + config.get('PORT'))
