@@ -9,7 +9,7 @@ metadata:
     restore-type: application
 spec:
   # Reference the backup to restore from
-  backupName: parks-app-backup-2
+  backupName: parks-app-backup-1
   
   # Restore to the same namespace
   includedNamespaces:
@@ -43,5 +43,28 @@ spec:
   # Restore policy
   existingResourcePolicy: update
   
-# need to add a hook to: oc -n parks-app label pod restify-1-qtjsx deploymentconfig=restify
+ # need to add a hook to: oc -n parks-app label pod restify-1-qtjsx deploymentconfig=restify
+ 
+  # Post-restore hooks to fix label issues
+  hooks:
+    resources:
+    - name: fix-restify-labels
+      includedNamespaces:
+      - parks-app
+      labelSelector:
+        matchLabels:
+          app: restify
+      postHooks:
+      - exec:
+          execTimeout: 1m
+          waitTimeout: 5m
+          onError: Fail
+          container: restify
+          command:
+          - /bin/sh
+          - -c
+          - |
+            sleep 10
+            /usr/bin/curl localhost:8080
 
+ 

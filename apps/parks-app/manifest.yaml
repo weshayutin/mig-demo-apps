@@ -100,7 +100,7 @@ spec:
             
             # Test MongoDB connectivity with multiple methods
             echo "Testing MongoDB connectivity..."
-            for i in $(seq 1 60); do
+            for i in $(seq 1 25); do
               echo "Attempt $i/60: Testing MongoDB connectivity..."
               
               # Method 1: Try telnet with timeout (more reliable than nc)

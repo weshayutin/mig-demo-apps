@@ -2,7 +2,7 @@
 apiVersion: velero.io/v1
 kind: Backup
 metadata:
-  name: parks-app-backup-2
+  name: parks-app-backup-1
   namespace: openshift-adp
 spec:
   # Include the parks-app namespace
