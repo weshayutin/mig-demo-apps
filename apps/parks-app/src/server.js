@@ -59,29 +59,35 @@ app.get('/', (req, res, next) => {
   }
 });
 
-// Static file serving for Restify v11
-app.get(/\/(css|js|img)\/?.*/, (req, res, next) => {
-  const path = require('path');
-  const filePath = path.join(__dirname, 'static', req.url);
-  
-  try {
-    const data = fs.readFileSync(filePath);
-    const ext = path.extname(filePath);
-    const contentType = {
-      '.css': 'text/css',
-      '.js': 'application/javascript',
-      '.jpg': 'image/jpeg',
-      '.png': 'image/png',
-      '.gif': 'image/gif'
-    }[ext] || 'application/octet-stream';
+// Static file serving for Restify v11 - using middleware approach
+app.use((req, res, next) => {
+  // Check if this is a static file request
+  if (req.url.match(/^\/(css|js|img)\//)) {
+    const path = require('path');
+    const filePath = path.join(__dirname, 'static', req.url);
     
-    res.header('Content-Type', contentType);
-    res.send(200, data);
-    next();
-  } catch (err) {
-    res.send(404, { error: 'File not found' });
-    next();
+    try {
+      const data = fs.readFileSync(filePath);
+      const ext = path.extname(filePath);
+      const contentType = {
+        '.css': 'text/css',
+        '.js': 'application/javascript',
+        '.jpg': 'image/jpeg',
+        '.png': 'image/png',
+        '.gif': 'image/gif'
+      }[ext] || 'application/octet-stream';
+      
+      res.header('Content-Type', contentType);
+      res.send(200, data);
+      return; // Don't call next() for static files
+    } catch (err) {
+      res.send(404, { error: 'File not found' });
+      return; // Don't call next() for static files
+    }
   }
+  
+  // Not a static file, continue to next middleware
+  next();
 });
 
 app.listen(config.get('PORT'), config.get('IP'), () => {
