@@ -43,7 +43,10 @@ spec:
   # Restore policy
   existingResourcePolicy: update
   
- # need to add a hook to: oc -n parks-app label pod restify-1-qtjsx deploymentconfig=restify
+# fixed: need to add a hook to: oc -n parks-app label pod restify-1-qtjsx deploymentconfig=restify
+#  oc  exec restify-1-w24w5 -c wait-for-mongodb  -it -- /bin/bash
+#  oc -n parks-app logs -f restify-1-w24w5 -c wait-for-mongodb
+
  
   # Post-restore hooks to fix label issues
   hooks:
@@ -66,5 +69,5 @@ spec:
           - |
             sleep 10
             /usr/bin/curl localhost:8080
-
+        
  
