@@ -4,9 +4,10 @@ var restify = require('restify'),
     db      = require('./bin/db.js');
 var app     = restify.createServer();
 
-// Initialize database asynchronously
+// Initialize database asynchronously (will retry when MongoDB is available)
 db.initDB('keepAlive').catch(err => {
-  console.error('Failed to initialize database:', err);
+  console.error('Database initialization failed (MongoDB may not be ready yet):', err.message);
+  console.log('Application will continue to start and retry database connection...');
 });
 
 app.use(restify.plugins.queryParser())

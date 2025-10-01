@@ -24,15 +24,31 @@ async function initConnection() {
     
     return db;
   } catch (err) {
-    console.log('database error', err);
+    console.log('database connection failed:', err.message);
     throw err;
   }
 }
 
-// Ensure connection is established
+// Ensure connection is established with retry logic
 async function ensureConnection() {
   if (!db) {
-    await initConnection();
+    const maxRetries = 5;
+    const retryDelay = 2000; // 2 seconds
+    
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        await initConnection();
+        return db;
+      } catch (err) {
+        console.log(`Database connection attempt ${i + 1}/${maxRetries} failed:`, err.message);
+        if (i < maxRetries - 1) {
+          console.log(`Retrying in ${retryDelay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, retryDelay));
+        } else {
+          throw new Error(`Failed to connect to database after ${maxRetries} attempts: ${err.message}`);
+        }
+      }
+    }
   }
   return db;
 }
