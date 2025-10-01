@@ -11,8 +11,19 @@ db.initDB('keepAlive').catch(err => {
 });
 
 app.use(restify.plugins.queryParser())
-app.use(restify.plugins.cors())
 app.use(restify.plugins.fullResponse())
+
+// CORS handling for Restify v11
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  if (req.method === 'OPTIONS') {
+    res.send(200);
+  } else {
+    next();
+  }
+})
 
 // Routes
 app.get('/parks/within', db.selectBox);
