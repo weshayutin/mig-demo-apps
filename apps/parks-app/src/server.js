@@ -41,18 +41,21 @@ app.get('/parks', async (req, res) => {
     res.send(500, { error: err.message });
   }
 });
-app.get('/status', (req, res) => {
+app.get('/status', (req, res, next) => {
   res.send({ status: 'ok' });
+  next();
 });
 
-app.get('/', (req, res) => {
+app.get('/', (req, res, next) => {
   try {
     const data = fs.readFileSync(__dirname + '/index.html');
     res.status(200);
     res.header('Content-Type', 'text/html');
     res.end(data.toString().replace(/host:port/g, req.header('Host')));
+    next();
   } catch (err) {
     res.send(500, { error: 'Failed to load index.html' });
+    next();
   }
 });
 
@@ -74,8 +77,10 @@ app.get(/\/(css|js|img)\/?.*/, (req, res, next) => {
     
     res.header('Content-Type', contentType);
     res.send(200, data);
+    next();
   } catch (err) {
     res.send(404, { error: 'File not found' });
+    next();
   }
 });
 
